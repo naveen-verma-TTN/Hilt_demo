@@ -3,11 +3,10 @@ package com.example.hilt_demo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         println(someClass.doAThing())
-        println(someClass.doSomeOtherThing())
     }
 }
 
@@ -39,25 +37,27 @@ class MyFragment: Fragment() {
 class SomeClass
 @Inject
 constructor(
-    // construction injection
-    private val someOtherClass: SomeOtherClass
+    // we can't directly inject the interface in hilt :: Need a work around for this
+    private val someInterfaceImpl: SomeInterface,
+    // Also we can't directly inject the Third-party libraries in hilt :: Need a work around for this
+    private val gson: Gson
 ) {
 
     fun doAThing(): String {
-        return "Look I did a thing!"
-    }
-
-    fun doSomeOtherThing(): String {
-        return someOtherClass.doSomeOtherThing()
+        return "Look I got: ${someInterfaceImpl.getAThing()}"
     }
 }
 
 
-class SomeOtherClass
+class SomeInterfaceImpl
 @Inject
-constructor() {
-
-    fun doSomeOtherThing(): String {
-        return "Look I did some other thing!"
+constructor() : SomeInterface {
+    override fun getAThing(): String {
+        return "A Thing!"
     }
+}
+
+interface SomeInterface {
+
+    fun getAThing(): String
 }

@@ -13,6 +13,8 @@ import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
 import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @AndroidEntryPoint
@@ -26,7 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        println(someClass.doAThing())
+        println(someClass.doAThing1())
+        println(someClass.doAThing2())
     }
 }
 
@@ -45,21 +48,32 @@ class SomeClass
 @Inject
 constructor(
     // we can't directly inject the interface in hilt :: Need a work around for this
-    private val someInterfaceImpl: SomeInterface,
+    @MyModule.Impl1 private val someInterfaceImpl1: SomeInterface,
+    @Named("Impl2") private val someInterfaceImpl2: SomeInterface,
     // Also we can't directly inject the Third-party libraries in hilt :: Need a work around for this
     private val gson: Gson
 ) {
-    fun doAThing(): String {
-        return "Look I got: ${someInterfaceImpl.getAThing()} and \"${gson.javaClass.canonicalName}\" object!"
+    fun doAThing1(): String {
+        return "Look I got: ${someInterfaceImpl1.getAThing()} and \"${gson.javaClass.canonicalName}\" object!"
+    }
+    fun doAThing2(): String {
+        return "Look I got: ${someInterfaceImpl2.getAThing()} and \"${gson.javaClass.canonicalName}\" object!"
     }
 }
 
 
-class SomeInterfaceImpl
+class SomeInterfaceImpl1
 @Inject
 constructor() : SomeInterface {
     override fun getAThing(): String {
-        return "A Thing!"
+        return "A Thing 1!"
+    }
+}
+class SomeInterfaceImpl2
+@Inject
+constructor() : SomeInterface {
+    override fun getAThing(): String {
+        return "A Thing 2!"
     }
 }
 
@@ -108,6 +122,7 @@ abstract class MyModuleWithActivity {
      *//*
 }*/
 
+
 /**
  * easy way to create a Module dependencies
  */
@@ -116,10 +131,18 @@ abstract class MyModuleWithActivity {
 @Module
 class MyModule {
 
+    @Impl1
     @ActivityScoped
     @Provides
-    fun provideSomeInterface(): SomeInterface {
-        return SomeInterfaceImpl()
+    fun provideSomeInterface1(): SomeInterface {
+        return SomeInterfaceImpl1()
+    }
+
+    @Named("Impl2")
+    @ActivityScoped
+    @Provides
+    fun provideSomeInterface2(): SomeInterface {
+        return SomeInterfaceImpl2()
     }
 
     @ActivityScoped
@@ -127,4 +150,14 @@ class MyModule {
     fun provideGson(): Gson {
         return  Gson()
     }
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Impl1
+
+/*
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Impl2*/
+
 }

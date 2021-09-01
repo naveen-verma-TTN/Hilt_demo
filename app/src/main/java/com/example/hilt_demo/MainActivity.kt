@@ -24,12 +24,20 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var someClass: SomeClass
 
+    @Inject
+    lateinit var fragmentFactory: MainFragmentFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        println(someClass.doAThing1())
-        println(someClass.doAThing2())
+//        println(someClass.doAThing1())
+//        println(someClass.doAThing2())
+
+        supportFragmentManager.fragmentFactory = fragmentFactory
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, MyFragment::class.java, null)
+            .commit()
     }
 }
 

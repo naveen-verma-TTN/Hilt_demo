@@ -1,21 +1,18 @@
-package com.example.hilt_demo
+package com.example.hilt
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.gson.Gson
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
-import dagger.hilt.components.SingletonComponent
 import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Qualifier
-import javax.inject.Singleton
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.example.hilt_demo
+package com.example.hilt
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory

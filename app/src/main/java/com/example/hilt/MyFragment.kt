@@ -1,4 +1,4 @@
-package com.example.hilt_demo
+package com.example.hilt
 
 import android.os.Bundle
 import android.util.Log
